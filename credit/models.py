@@ -11,6 +11,7 @@ class Customer(models.Model):
     approved_limit = models.DecimalField(max_digits=10, decimal_places=2)
     current_debt = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         total_debt = self.loan_set.aggregate(
             total_debt=Sum(
                 ExpressionWrapper(
@@ -20,8 +21,9 @@ class Customer(models.Model):
             )
         )['total_debt'] or 0
         self.current_debt = total_debt
-        super().save(*args, **kwargs)
+        super().save(update_fields=['current_debt'])
 
+        
 class Loan(models.Model):
     loan_id = models.IntegerField()
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
