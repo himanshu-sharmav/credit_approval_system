@@ -70,20 +70,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'credit_approval_system.wsgi.application'
 
-
+import os
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'credit_db',
-        'USER': 'postgres',
-        'PASSWORD': 'Himan123@',
-        'HOST': 'localhost',
+        'NAME': os.environ.get('POSTGRES_DB', 'credit_db'),
+        'USER': os.environ.get('POSTGRES_USER', 'your_db_user'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'your_db_password'),
+        'HOST': 'db',  
         'PORT': '5432',
     }
 }
+
+# Celery settings
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://redis:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://redis:6379/0')
 
 
 # Password validation
@@ -116,8 +120,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 
 # Static files (CSS, JavaScript, Images)
